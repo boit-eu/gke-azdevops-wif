@@ -89,3 +89,7 @@ Wenn die Verbindung angelegt wurde, kann unter dem Overview die "Workload Identi
 Hier Beispieldaten:
 
 * Issuer: https://vstoken.dev.azure.com/b4c19df1-98c3-4247-90ff-d69023a45233
+
+Eine Alternativ Möglichkeit ist ein Python Skript, was hier zur Verfügung steht:
+
+https://github.com/binxio/list-azure-devops-account-ids
