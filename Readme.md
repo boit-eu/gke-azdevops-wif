@@ -1,6 +1,21 @@
 # Azure DevOps Terraform zu GCP mit WIF
 
-How to setup Workload Identity Federation for deploying resources in GCP with Azure DevOps Pipelines and Terraform.
+Erstellung von Workload Identity Federation Auth für Azure DevOps mit Google Cloud Platform.
+
+## Variablen
+
+Folgende Variablen wurden definiert
+
+* Workload Identity Pool: azure-pool
+* Workload Identity Pool Provider: azure-provider
+* Issuer: https://vstoken.dev.azure.com/00000000-0000-0000-0000-000000000000
+* Azure DevOps Org ID: 00000000-0000-0000-0000-000000000000
+* GCP Service Account Name: terraform-sa
+* GCP Projekt: projekt-1234
+* GCP SA E-Mail: terraform-sa@projekt-1234.iam.gserviceaccount.com
+* Azure DevOps Org Name: ado-org-name
+* Azure DevOps Projekt Name: ado-projekt-name
+* Azure DevOps Service connection Name: gcp-federation
 
 ## Setup Google Accounts
 
@@ -39,7 +54,7 @@ Policy Binding für den Service Account
 ```bash
 gcloud iam service-accounts add-iam-policy-binding \
     terraform-sa@projekt-1234.iam.gserviceaccount.com \
-    --member="principalSet://iam.googleapis.com/projects/123456789/locations/global/workloadIdentityPools/azure-pool/attribute.subject/sc://<ado-org-name>/<ado-projekt-name>/<ado-serviceconnection>" \
+    --member="principalSet://iam.googleapis.com/projects/123456789/locations/global/workloadIdentityPools/azure-pool/attribute.subject/sc://ado-org-name/ado-projekt-name/gcp-federation" \
     --role="roles/iam.workloadIdentityUser"
 ```
 
@@ -48,6 +63,22 @@ gcloud iam service-accounts add-iam-policy-binding \
 Unter "Project Settings" -> "Service connections" -> "New service connection". Hier den Connection Type "Google Cloud (WIF)" auswählen. Falls dieser nicht zur Auswahl steht, kann er über den Marketplace installiert werden. Die Erweiterung heißt "Google Cloud Auth".
 
 https://marketplace.visualstudio.com/items?itemName=laurensknoll.google-cloud-auth-tasks
+
+In der Service connection sind folgende Angaben zu machen:
+
+* Workload Identity Pool Provider: projects/1234567/locations/global/workloadIdentityPools/azure-pool/providers/azure-provider
+* Service account: terraform-sa@projekt-1234.iam.gserviceaccount.com
+* Service Connection Name: gcp-federation
+
+Beim Idenity Pool Provider wird die GCP Projektnummer gebraucht. Das ist nicht der Projekt Name. Die Nummer kannst du folgendermaßen herausfinden:
+
+```bash
+gcloud projects list
+```
+
+Hier wird eine Tabelle mit den Projekten ausgegeben. Aus der Spalte "PROJECT_NUMBER" nimmst du die Projektnummer.
+
+Ersetze ebenfalls die Daten für den Serviceaccount mit deinen erstellen SA. Der Service Connection Name ist ebenfalls wichtig, da dieser bei dem Policy Binding am Service Account angegeben wurde.
 
 ### Azure DevOps Organization ID
 
