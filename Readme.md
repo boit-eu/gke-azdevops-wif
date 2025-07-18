@@ -45,4 +45,16 @@ gcloud iam service-accounts add-iam-policy-binding \
 
 ## Setup Azure DevOps
 
+Unter "Project Settings" -> "Service connections" -> "New service connection". Hier den Connection Type "Google Cloud (WIF)" auswählen. Falls dieser nicht zur Auswahl steht, kann er über den Marketplace installiert werden. Die Erweiterung heißt "Google Cloud Auth".
 
+https://marketplace.visualstudio.com/items?itemName=laurensknoll.google-cloud-auth-tasks
+
+### Azure DevOps Organization ID
+
+Um die korrekte Organization ID herauszufinden, gibt es mehrere Wege. Am einfachsten ist es, unter "Service connections" in den "Project settings" einmal eine "Azure Resource Manager" Connection anzulegen. Der "Identity type" kann "App registration (automatic)" bleiben, Credential ist "Workload identity federation". Noch eine Subscription und einen Namespace auswählen. Das ist nicht relevant, wir brauchen nur die Informationen, die anschließend erzeugt werden.
+
+Wenn die Verbindung angelegt wurde, kann unter dem Overview die "Workload Identity federation details" eingesehen werden. Den "Issuer" benötigen wir für die Erstellung des WIF Providers in GCP.
+
+Hier Beispieldaten:
+
+* Issuer: https://vstoken.dev.azure.com/b4c19df1-98c3-4247-90ff-d69023a45233
